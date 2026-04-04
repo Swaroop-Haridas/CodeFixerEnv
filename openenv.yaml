@@ -1,0 +1,130 @@
+# openenv.yaml — Required metadata for OpenEnv spec compliance
+# Validated by: openenv validate
+
+name: CodeFixerEnv
+version: "1.0.0"
+description: >
+  A reinforcement learning environment where an AI agent receives
+  buggy Python functions and must submit corrected code to earn rewards.
+  Covers three real-world debugging scenarios: off-by-one loop errors,
+  multi-bug list processing, and algorithmic complexity refactoring.
+
+author: "Hackathon Submission"
+tags:
+  - openenv
+  - code-debugging
+  - python
+  - software-engineering
+
+# ── Interface ──────────────────────────────────────────────────────────────
+api:
+  reset_endpoint:  "/reset"
+  step_endpoint:   "/step"
+  state_endpoint:  "/state"
+  health_endpoint: "/health"
+
+# ── Observation space ──────────────────────────────────────────────────────
+observation_space:
+  type: object
+  fields:
+    input:
+      type: string
+      description: "Buggy Python code the agent must fix"
+    context:
+      type: string
+      description: "Plain-English description of what the correct code should do"
+    history:
+      type: array
+      description: "Ordered list of previous (action, feedback) dicts this episode"
+    step_number:
+      type: integer
+      description: "Number of steps elapsed since reset"
+    max_steps:
+      type: integer
+      description: "Episode length cap (default 5)"
+
+# ── Action space ───────────────────────────────────────────────────────────
+action_space:
+  type: object
+  fields:
+    type:
+      type: string
+      enum: ["fix", "explain", "give_up"]
+      description: "fix=submit corrected code, explain=request hint, give_up=end episode"
+    content:
+      type: string
+      description: "Full corrected Python function (fix), or empty string (explain/give_up)"
+
+# ── Reward space ───────────────────────────────────────────────────────────
+reward_space:
+  type: object
+  fields:
+    value:
+      type: float
+      range: [-0.10, 1.20]
+      description: "Net scalar reward for this step"
+    grader_score:
+      type: float
+      range: [0.0, 1.0]
+      nullable: true
+      description: "Raw grader output (only on fix actions)"
+    improvement:
+      type: float
+      nullable: true
+      description: "Score delta vs. previous best"
+    efficiency_bonus:
+      type: float
+      description: "+0.20 if solved in ≤ 2 steps, else 0.0"
+    penalty:
+      type: float
+      description: "Negative component from redundancy / explain / give_up"
+    reason:
+      type: string
+      description: "Human-readable reward explanation"
+
+# ── Tasks ──────────────────────────────────────────────────────────────────
+tasks:
+  - id: easy_sum_range
+    difficulty: easy
+    description: >
+      Fix an off-by-one error in sum_range(n).
+      Agent must change range(n) to range(1, n+1).
+    grader_weights:
+      syntax: 0.20
+      correctness: 0.70
+      code_quality: 0.10
+
+  - id: medium_flatten_list
+    difficulty: medium
+    description: >
+      Fix two bugs in flatten(lst): incorrect type check and
+      missing inner-list recursion.
+    grader_weights:
+      syntax: 0.15
+      correctness: 0.75
+      isinstance_usage: 0.10
+
+  - id: hard_longest_unique_substr
+    difficulty: hard
+    description: >
+      Refactor longest_unique(s) from O(n²) nested loops to
+      an O(n) sliding window using a hashmap.
+    grader_weights:
+      syntax: 0.10
+      correctness: 0.70
+      linear_complexity: 0.20
+
+# ── Episode config ─────────────────────────────────────────────────────────
+episode:
+  max_steps: 5
+  reward_range: [-0.10, 1.20]
+  termination_conditions:
+    - "grader_score >= 1.0 on a fix action"
+    - "action.type == give_up"
+    - "step_number >= max_steps"
+
+# ── Infrastructure ─────────────────────────────────────────────────────────
+runtime:
+  port: 7860
+  framework: fastapi
+  python_version: "3.11"
