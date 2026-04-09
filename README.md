@@ -141,39 +141,6 @@ pytest
 - Research in **program synthesis & repair**
 - Educational tools for **learning debugging**
 
----
-
-## 🔮 Future Improvements
-
-- Add more diverse bug categories
-- Support multiple programming languages
-- Integrate LLM-based reward shaping
-- Build a frontend UI for visualization
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Feel free to:
-
-- Add new tasks
-- Improve reward functions
-- Optimize environment performance
-
----
-
-## 📜 License
-
-Specify your license here (MIT recommended).
-
----
-
-## 🙌 Acknowledgements
-
-- OpenEnv Framework
-- Meta AI
-- PyTorch
-- Hugging Face
 
 ---
 
