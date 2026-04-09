@@ -2,7 +2,7 @@
 
 An **OpenEnv-based Reinforcement Learning environment** designed to train AI agents to **debug Python code automatically**.
 
-Built as part of the **Meta × PyTorch × Hugging Face OpenEnv Hackathon**, this project focuses on creating a structured environment where models learn to fix buggy code using feedback-driven rewards.
+This project focuses on creating a structured environment where models learn to fix buggy code using feedback-driven rewards.
 
 ---
 
