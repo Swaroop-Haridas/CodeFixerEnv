@@ -177,13 +177,5 @@ Specify your license here (MIT recommended).
 
 ---
 
-## 💡 Author
-
-**Swaroop Haridas**  
-M.Tech CSE (AI & Data Analytics)  
-NIT Calicut
-
----
-
 > "Teaching machines to debug code is one step closer to autonomous programming." 🚀
 
